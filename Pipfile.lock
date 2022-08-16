@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "7e542d8c5e302b43439d47c40b8faa326a1d3e37abc41f1c374b14fe5da4d377"
+            "sha256": "c1ce4fe8522ce52f3d9da1c92fa4aa9e5087cc4c9dfddd2ce49a09702ed40ce9"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -101,6 +101,10 @@
                 "sha256:fcd131dd944808b5bdb38e6f5b53013c5aa4f334c5cad0c72742f6eba4b73db0"
             ],
             "version": "==1.15.1"
+        },
+        "myxmpp": {
+            "editable": true,
+            "path": "."
         },
         "pyasn1": {
             "hashes": [
