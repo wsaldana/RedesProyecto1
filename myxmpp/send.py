@@ -30,7 +30,7 @@ class SendMsgBot(slixmpp.ClientXMPP):
                 '\t6) Definir mensaje de presencia ',
                 '\t7) Enviar/recibir notificaciones ',
                 '\t8) Enviar/recibir archivos',
-                '\t9) Regresar',
+                '\t9) Desconectar',
                 sep='\n'
             )
             selection = input("Option: ")
