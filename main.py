@@ -1,10 +1,11 @@
 from __future__ import annotations
 import abc
 import logging
-from argparse import ArgumentParser
 
 from myxmpp.send import SendMsgBot
-from myxmpp.accounts.user import User
+
+
+logging.basicConfig(level='ERROR', format='%(levelname)-8s %(message)s')
 
 
 class Menu(abc.ABC):
@@ -28,19 +29,21 @@ class ExitMenu(Menu):
 class MainMenu(Menu):
     def next(self) -> Menu:
         print(
-            '1) Registrar una nueva cuenta en el servidor ',
-            '2) Iniciar sesión con una cuenta ',
-            '3) Cerrar sesión con una cuenta ',
-            '4) Eliminar la cuenta del servidor',
-            '5) Salir',
+            '\n==================== MAIN MENU ===================',
+            '\t1) Registrar una nueva cuenta en el servidor ',
+            '\t2) Iniciar sesión con una cuenta ',
+            '\t3) Cerrar sesión con una cuenta ',
+            '\t4) Eliminar la cuenta del servidor',
+            '\t5) Salir',
             sep='\n'
         )
-        selection = input()
+        selection = input("Option: ")
+        print('')
 
         if selection == '1':
             return None
         elif selection == '2':
-            return None
+            return LogginMenu()
         elif selection == '3':
             return None
         elif selection == '4':
@@ -56,26 +59,36 @@ class LogginMenu(Menu):
         username = input("Username: ")
         password = input("Password: ")
 
-        user = User(username, password)
+        xmpp = SendMsgBot(username, password)
+        xmpp.register_plugin('xep_0030')
+        xmpp.register_plugin('xep_0199')
+        xmpp.connect()
+        print('\nLoading...')
+        xmpp.process(forever=False)
+
+        return MainMenu()
 
 
 class LoggedMenu(Menu):
     def next(self) -> Menu:
         print(
-            '1) Mostrar todos los usuarios/contactos y su estado ',
-            '2) Agregar un usuario a los contactos ',
-            '3) Mostrar detalles de contacto de un usuario ',
-            '4) Comunicación 1 a 1 con cualquier usuario/contacto ',
-            '5) Participar en conversaciones grupales ',
-            '6) Definir mensaje de presencia ',
-            '7) Enviar/recibir notificaciones ',
-            '8) Enviar/recibir archivos',
-            '9) Regresar',
+            '\n==================== USER MENU ===================',
+            '\t1) Mostrar todos los usuarios/contactos y su estado ',
+            '\t2) Agregar un usuario a los contactos ',
+            '\t3) Mostrar detalles de contacto de un usuario ',
+            '\t4) Comunicación 1 a 1 con cualquier usuario/contacto ',
+            '\t5) Participar en conversaciones grupales ',
+            '\t6) Definir mensaje de presencia ',
+            '\t7) Enviar/recibir notificaciones ',
+            '\t8) Enviar/recibir archivos',
+            '\t9) Regresar',
             sep='\n'
         )
-        selection = input()
+        selection = input("Option: ")
+        print('')
 
         if selection == '1':
+            self.xmpp.handler()
             return None
         elif selection == '2':
             return None
@@ -92,7 +105,7 @@ class LoggedMenu(Menu):
         elif selection == '8':
             return None
         elif selection == '9':
-            return ExitMenu()
+            return MainMenu()
         else:
             return WrongOptionMenu()
 
@@ -118,50 +131,4 @@ def run():
 
 
 if __name__ == '__main__':
-    parser = ArgumentParser(description=SendMsgBot.__doc__)
-
-    # Output verbosity options.
-    parser.add_argument("-q", "--quiet", help="set logging to ERROR",
-                        action="store_const", dest="loglevel",
-                        const=logging.ERROR, default=logging.INFO)
-    parser.add_argument("-d", "--debug", help="set logging to DEBUG",
-                        action="store_const", dest="loglevel",
-                        const=logging.DEBUG, default=logging.INFO)
-
-    # JID and password options.
-    parser.add_argument("-j", "--jid", dest="jid",
-                        help="JID to use")
-    parser.add_argument("-p", "--password", dest="password",
-                        help="password to use")
-    parser.add_argument("-t", "--to", dest="to",
-                        help="JID to send the message to")
-    parser.add_argument("-m", "--message", dest="message",
-                        help="message to send")
-
-    args = parser.parse_args()
-
-    # Setup logging.
-    logging.basicConfig(level=args.loglevel,
-                        format='%(levelname)-8s %(message)s')
-
-    if args.jid is None:
-        args.jid = input("Username: ")
-    if args.password is None:
-        args.password = input("Password: ")
-    if args.to is None:
-        args.to = input("Send To: ")
-    if args.message is None:
-        args.message = input("Message: ")
-
-    # Setup the EchoBot and register plugins. Note that while plugins may
-    # have interdependencies, the order in which you register them does
-    # not matter.
-    xmpp = SendMsgBot(args.jid, args.password, args.to, args.message)
-    # Service Discovery
-    xmpp.register_plugin('xep_0030')
-    # XMPP Ping
-    xmpp.register_plugin('xep_0199')
-
-    # Connect to the XMPP server and start processing XMPP stanzas.
-    xmpp.connect()
-    xmpp.process(forever=False)
+    run()
