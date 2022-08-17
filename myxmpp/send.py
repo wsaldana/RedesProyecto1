@@ -1,4 +1,5 @@
 import slixmpp
+from slixmpp.exceptions import IqError, IqTimeout
 
 from myxmpp.accounts.user import User
 
@@ -52,7 +53,11 @@ class SendMsgBot(slixmpp.ClientXMPP):
                 msg = input("Message: ")
                 await self.send_group_msg(msg, group)
             elif selection == '6':
-                pass
+                print('chat, away, dnd')
+                print('Available, Unavailable, Do not Disturb')
+                presence = input('Presence: ')
+                status = input("Status: ")
+                await self.set_presence(presence, status)
             elif selection == '7':
                 pass
             elif selection == '8':
@@ -128,6 +133,14 @@ class SendMsgBot(slixmpp.ClientXMPP):
             mbody=message,
             mtype='groupchat'
         )
+
+    async def set_presence(self, presence, status):
+        try:
+            self.send_presence(pshow=presence, pstatus=status)
+        except IqError:
+            print('Something went wrong...')
+        except IqTimeout:
+            print('Timeout, server must be busy...')
 
     async def disconnect_session(self):
         self.disconnect()
