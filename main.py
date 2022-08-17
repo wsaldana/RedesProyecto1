@@ -64,47 +64,6 @@ class LogginMenu(Menu):
         return MainMenu()
 
 
-class LoggedMenu(Menu):
-    def next(self) -> Menu:
-        print(
-            '\n==================== USER MENU ===================',
-            '\t1) Mostrar todos los usuarios/contactos y su estado ',
-            '\t2) Agregar un usuario a los contactos ',
-            '\t3) Mostrar detalles de contacto de un usuario ',
-            '\t4) Comunicación 1 a 1 con cualquier usuario/contacto ',
-            '\t5) Participar en conversaciones grupales ',
-            '\t6) Definir mensaje de presencia ',
-            '\t7) Enviar/recibir notificaciones ',
-            '\t8) Enviar/recibir archivos',
-            '\t9) Regresar',
-            sep='\n'
-        )
-        selection = input("Option: ")
-        print('')
-
-        if selection == '1':
-            self.xmpp.handler()
-            return None
-        elif selection == '2':
-            return None
-        elif selection == '3':
-            return None
-        elif selection == '4':
-            return None
-        elif selection == '5':
-            return None
-        elif selection == '6':
-            return None
-        elif selection == '7':
-            return None
-        elif selection == '8':
-            return None
-        elif selection == '9':
-            return MainMenu()
-        else:
-            return WrongOptionMenu()
-
-
 class Executer:
     current_menu: Menu = MainMenu()
 
