@@ -2,7 +2,7 @@ from __future__ import annotations
 import abc
 import logging
 
-from myxmpp.send import SendMsgBot
+from myxmpp.send import SendMsgBot, Register
 
 
 logging.basicConfig(level='ERROR', format='%(levelname)-8s %(message)s')
@@ -39,13 +39,33 @@ class MainMenu(Menu):
         print('')
 
         if selection == '1':
-            return None
+            return RegisterMenu()
         elif selection == '2':
             return LogginMenu()
         elif selection == '3':
             return ExitMenu()
         else:
             return WrongOptionMenu()
+
+
+class RegisterMenu(Menu):
+    def next(self) -> Menu:
+        username = input("Username: ")
+        password = input("Password: ")
+
+        xmpp = Register(username, password)
+        xmpp.register_plugin('xep_0030')
+        xmpp.register_plugin('xep_0004')
+        xmpp.register_plugin('xep_0066')
+        xmpp.register_plugin('xep_0077')
+        xmpp.register_plugin('xep_0199')
+        xmpp.register_plugin('xep_0045')
+        xmpp.connect()
+        xmpp.process(forever=False)
+
+        print("Done")
+
+        return MainMenu()
 
 
 class LogginMenu(Menu):

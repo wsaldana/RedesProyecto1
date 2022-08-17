@@ -151,3 +151,31 @@ class SendMsgBot(slixmpp.ClientXMPP):
 
     async def disconnect_session(self):
         self.disconnect()
+
+
+class Register(SendMsgBot):
+    def __init__(self, jid, password):
+        slixmpp.ClientXMPP.__init__(self, jid, password)
+
+        self.user = jid
+        self.add_event_handler("session_start", self.start)
+        self.add_event_handler("register", self.register)
+
+    async def register(self):
+        iq = self.Iq()
+        iq['type'] = 'set'
+        iq['register']['username'] = self.boundjid.user
+        iq['register']['password'] = self.password
+
+        try:
+            iq.send()
+            print("Created", "\n")
+        except IqError as err:
+            print("Something went wrong...")
+            self.disconnect()
+        except IqTimeout:
+            print("Timeout, server must be busy...")
+            self.disconnect()
+        except Exception as e:
+            print(e)
+            self.disconnect()
