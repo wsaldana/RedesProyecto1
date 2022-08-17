@@ -41,7 +41,8 @@ class SendMsgBot(slixmpp.ClientXMPP):
                 username = input('Username: ')
                 await self.add_contact(username)
             elif selection == '3':
-                pass
+                username = input('Username: ')
+                await self.contact_details(username)
             elif selection == '4':
                 pass
             elif selection == '5':
@@ -85,13 +86,32 @@ class SendMsgBot(slixmpp.ClientXMPP):
                             status = 'online'
                         else:
                             status = status['status']
-                        print('Estado: ', status)
+                        print('Status: ', status)
 
     async def add_contact(self, username):
         try:
             self.send_presence_subscription(pto=username)
         except Exception as err:
             print('Something went wrong... ', str(err))
+
+    async def contact_details(self, username):
+        self.get_roster()
+
+        contact = self.client_roster[username]
+        if contact['name']:
+            print('Nombre: ', contact['name'], '\n')
+        print('Username: ', username, '\n')
+        connections = self.client_roster.presence(username)
+
+        if connections == {}:
+            print('Status: Offline')
+        else:
+            for client, status in connections.items():
+                if status['status'] == '':
+                    status = 'online'
+                else:
+                    status = status['status']
+                print('Status: ', status)
 
     async def send_msg(self, message: str, to_jid: str):
         self.send_message(mto=to_jid,
