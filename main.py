@@ -1,3 +1,10 @@
+"""
+Simple CLI chat implementing XMPP protocol.
+
+Main will use state pattern to change the state
+of the program execution.
+"""
+
 from __future__ import annotations
 import abc
 import logging
@@ -9,24 +16,39 @@ logging.basicConfig(level='ERROR', format='%(levelname)-8s %(message)s')
 
 
 class Menu(abc.ABC):
+    """Menu abstract class"""
+
     @abc.abstractclassmethod
     def next(self) -> Menu:
+        """Passes to the next program state
+
+        Returns:
+            Menu: Next menu to execute
+        """
         pass
 
 
 class WrongOptionMenu(Menu):
+    """Menu for invalid options"""
+
     def next(self) -> Menu:
         print("Invalid option...")
         return MainMenu()
 
 
 class ExitMenu(Menu):
+    """Exit menu"""
+
     def next(self) -> Menu:
         print("See you later...")
         return None
 
 
 class MainMenu(Menu):
+    """Main menu which contains the options
+    with the main functionalities
+    """
+
     def next(self) -> Menu:
         print(
             '\n==================== MAIN MENU ===================',
@@ -49,6 +71,8 @@ class MainMenu(Menu):
 
 
 class RegisterMenu(Menu):
+    """Menu for registering a new user"""
+
     def next(self) -> Menu:
         username = input("Username: ")
         password = input("Password: ")
@@ -69,6 +93,8 @@ class RegisterMenu(Menu):
 
 
 class LogginMenu(Menu):
+    """Menu for logging an account"""
+
     def next(self) -> Menu:
         username = input("Username: ")
         password = input("Password: ")
@@ -85,9 +111,15 @@ class LogginMenu(Menu):
 
 
 class Executer:
+    """Handles the program execution state
+    and executes the next state
+    """
+
+    # Set initial state
     current_menu: Menu = MainMenu()
 
     def execute(self):
+        """Executes current state and passes to next one"""
         next_menu = self.current_menu.next()
         self.current_menu = next_menu
 
@@ -95,6 +127,8 @@ class Executer:
 
 
 def run():
+    """Starts the program state"""
+
     entry_point = Executer()
 
     while True:
