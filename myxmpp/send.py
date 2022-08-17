@@ -79,12 +79,6 @@ class SendMsgBot(slixmpp.ClientXMPP):
                 response.send()
 
                 self.disconnect()
-            elif selection == '11':
-                pass
-            elif selection == '12':
-                pass
-            elif selection == '13':
-                pass
             else:
                 print("\nIvalid option...")
 
