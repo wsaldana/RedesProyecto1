@@ -32,9 +32,7 @@ class MainMenu(Menu):
             '\n==================== MAIN MENU ===================',
             '\t1) Registrar una nueva cuenta en el servidor ',
             '\t2) Iniciar sesión con una cuenta ',
-            '\t3) Cerrar sesión con una cuenta ',
-            '\t4) Eliminar la cuenta del servidor',
-            '\t5) Salir',
+            '\t3) Salir',
             sep='\n'
         )
         selection = input("Option: ")
@@ -45,10 +43,6 @@ class MainMenu(Menu):
         elif selection == '2':
             return LogginMenu()
         elif selection == '3':
-            return None
-        elif selection == '4':
-            return None
-        elif selection == '5':
             return ExitMenu()
         else:
             return WrongOptionMenu()
