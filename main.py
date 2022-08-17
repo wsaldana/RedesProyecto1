@@ -62,6 +62,7 @@ class LogginMenu(Menu):
         xmpp = SendMsgBot(username, password)
         xmpp.register_plugin('xep_0030')
         xmpp.register_plugin('xep_0199')
+        xmpp.register_plugin('xep_0045')
         xmpp.connect()
         print('\nLoading...')
         xmpp.process(forever=False)

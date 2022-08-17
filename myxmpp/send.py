@@ -44,9 +44,13 @@ class SendMsgBot(slixmpp.ClientXMPP):
                 username = input('Username: ')
                 await self.contact_details(username)
             elif selection == '4':
-                pass
+                username = input('Username: ')
+                msg = input("Message: ")
+                await self.send_msg(msg, username)
             elif selection == '5':
-                pass
+                group = input('Group name: ')
+                msg = input("Message: ")
+                await self.send_group_msg(msg, group)
             elif selection == '6':
                 pass
             elif selection == '7':
@@ -117,6 +121,13 @@ class SendMsgBot(slixmpp.ClientXMPP):
         self.send_message(mto=to_jid,
                           mbody=message,
                           mtype='chat')
+
+    async def send_group_msg(self, message, group):
+        self.send_message(
+            mto=group+"@conference.alumchat.fun",
+            mbody=message,
+            mtype='groupchat'
+        )
 
     async def disconnect_session(self):
         self.disconnect()
