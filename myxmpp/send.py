@@ -31,6 +31,7 @@ class SendMsgBot(slixmpp.ClientXMPP):
                 '\t7) Enviar/recibir notificaciones ',
                 '\t8) Enviar/recibir archivos',
                 '\t9) Desconectar',
+                '\t10) Eliminar cuenta',
                 sep='\n'
             )
             selection = input("Option: ")
@@ -65,7 +66,19 @@ class SendMsgBot(slixmpp.ClientXMPP):
             elif selection == '9':
                 break
             elif selection == '10':
-                pass
+                self.register_plugin('xep_0030')
+                self.register_plugin('xep_0066')
+                self.register_plugin('xep_0199')
+                self.register_plugin('xep_0004')
+                self.register_plugin('xep_0077')
+
+                response = self.Iq()
+                response['type'] = 'set'
+                response['from'] = self.boundjid.user
+                response['register']['remove'] = True
+                response.send()
+
+                self.disconnect()
             elif selection == '11':
                 pass
             elif selection == '12':
