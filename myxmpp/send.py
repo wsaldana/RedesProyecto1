@@ -1,3 +1,7 @@
+"""
+Handles xmpp protocol processes
+"""
+
 import slixmpp
 from slixmpp.exceptions import IqError, IqTimeout
 
@@ -5,7 +9,17 @@ from myxmpp.accounts.user import User
 
 
 class SendMsgBot(slixmpp.ClientXMPP):
-    def __init__(self, jid, password):
+    """XMPP client"""
+
+    def __init__(self, jid: str, password: str):
+        """Initialize a new XMPP Client
+
+        Args:
+            jid (str): User JID
+            password (str): User password
+        """
+
+        # Save user credentials in a dataclass for latter use
         self.user = User(jid, password)
         slixmpp.ClientXMPP.__init__(
             self,
@@ -15,6 +29,12 @@ class SendMsgBot(slixmpp.ClientXMPP):
         self.add_event_handler("session_start", self.start)
 
     async def start(self, event):
+        """Client process handler listener
+
+        Args:
+            event (dict): Empty dictionary to save rosters
+        """
+
         self.send_presence()
         await self.get_roster()
 
@@ -54,8 +74,6 @@ class SendMsgBot(slixmpp.ClientXMPP):
                 msg = input("Message: ")
                 await self.send_group_msg(msg, group)
             elif selection == '6':
-                print('chat, away, dnd')
-                print('Available, Unavailable, Do not Disturb')
                 presence = input('Presence: ')
                 status = input("Status: ")
                 await self.set_presence(presence, status)
@@ -85,6 +103,7 @@ class SendMsgBot(slixmpp.ClientXMPP):
         self.disconnect()
 
     async def list_contacts(self):
+        """prints the contacts assosiated with logged user"""
         print('CONTACT LIST:')
         groups = self.client_roster.groups()
 
@@ -104,13 +123,23 @@ class SendMsgBot(slixmpp.ClientXMPP):
                             status = status['status']
                         print('Status: ', status)
 
-    async def add_contact(self, username):
+    async def add_contact(self, username: str):
+        """Adds a new user to the user contacts
+
+        Args:
+            username (str): Of the user to add
+        """
         try:
             self.send_presence_subscription(pto=username)
         except Exception as err:
             print('Something went wrong... ', str(err))
 
-    async def contact_details(self, username):
+    async def contact_details(self, username: str):
+        """Retrieves specific user activity details
+
+        Args:
+            username (str): User to get info from
+        """
         self.get_roster()
 
         contact = self.client_roster[username]
@@ -130,18 +159,36 @@ class SendMsgBot(slixmpp.ClientXMPP):
                 print('Status: ', status)
 
     async def send_msg(self, message: str, to_jid: str):
+        """Sent 1 to 1 messages to a user
+
+        Args:
+            message (str): Message to send
+            to_jid (str): Uset to send the message
+        """
         self.send_message(mto=to_jid,
                           mbody=message,
                           mtype='chat')
 
-    async def send_group_msg(self, message, group):
+    async def send_group_msg(self, message: str, group: str):
+        """Send message to a group
+
+        Args:
+            message (str): Message to send
+            group (str): Name of the group to send the message
+        """
         self.send_message(
             mto=group+"@conference.alumchat.fun",
             mbody=message,
             mtype='groupchat'
         )
 
-    async def set_presence(self, presence, status):
+    async def set_presence(self, presence: str, status: str):
+        """Changes the status and presence of the user
+
+        Args:
+            presence (str): Presence message
+            status (str): Status of the user
+        """
         try:
             self.send_presence(pshow=presence, pstatus=status)
         except IqError:
@@ -154,6 +201,8 @@ class SendMsgBot(slixmpp.ClientXMPP):
 
 
 class Register(SendMsgBot):
+    """Client for registrations, no acocunt needed"""
+
     def __init__(self, jid, password):
         slixmpp.ClientXMPP.__init__(self, jid, password)
 
@@ -162,6 +211,9 @@ class Register(SendMsgBot):
         self.add_event_handler("register", self.register)
 
     async def register(self):
+        """Registers a new user"""
+
+        # Get user credentials
         iq = self.Iq()
         iq['type'] = 'set'
         iq['register']['username'] = self.boundjid.user
